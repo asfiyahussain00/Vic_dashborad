@@ -1419,6 +1419,32 @@ refresh();
 
 // Auto-refresh every 30 seconds
 setInterval(refresh, 30000);
+
+
+
+
+  <script>
+let startTime = Date.now();
+let sessionId = localStorage.getItem('sessionId') || 'user_' + Math.floor(Math.random() * 1000000);
+localStorage.setItem('sessionId', sessionId);
+
+// Ye code pageview bhejne ke liye
+window.addEventListener('beforeunload', () => {
+  const duration = Math.round((Date.now() - startTime) / 1000);
+  fetch('https://backend-vic-7e5x.vercel.app/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sessionId,
+      type: 'pageview',
+      pagePath: document.title || 'Home',
+      country: 'Unknown',
+      timeOnPageSec: duration
+    })
+  }).catch(e => console.warn('Could not send event:', e));
+});
+</script>
+
 </script>
 
 </body>
